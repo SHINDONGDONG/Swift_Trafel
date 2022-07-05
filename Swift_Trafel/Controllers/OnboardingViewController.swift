@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol OnboardingViewControllerDelegate:AnyObject {
+    func showMainTabBarController()
+}
+
 class OnboardingViewController: UIViewController {
 
     // MARK: - Properties
@@ -86,6 +90,21 @@ extension OnboardingViewController: UICollectionViewDelegate, UICollectionViewDa
         return 0
     }
     
-    
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == K.Segue.showLoginSignUp {
+            if let destination = segue.destination as? LoginViewController {
+                destination.delegate = self
+            }
+        }
+    }
+}
+
+extension OnboardingViewController:OnboardingViewControllerDelegate {
+    func showMainTabBarController() {
+        
+        if let loginViewController = self.presentedViewController as? LoginViewController {
+            loginViewController.dismiss(animated: true)
+            PresenterManager.shared.show(vc: .mainTabBarController)
+        }
+    }
 }
