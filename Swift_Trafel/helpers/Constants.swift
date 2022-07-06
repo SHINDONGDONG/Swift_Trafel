@@ -8,6 +8,15 @@
 import Foundation
 
 struct K {
+    struct ReuseIdentifier {
+        static let onboardingCollectionViewCell = "OnboardingCollectionViewCell"
+    }
+    
+    struct NavigationTtile {
+        static let settings = "Settings"
+        static let Home = "Home"
+    }
+    
     struct Segue {
         static let showOnboarding = "showOnboarding"
         static let showLoginSignUp = "showLoginSignUp"

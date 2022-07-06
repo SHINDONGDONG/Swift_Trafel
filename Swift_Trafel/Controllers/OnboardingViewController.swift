@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Loaf
 
 protocol OnboardingViewControllerDelegate:AnyObject {
     func showMainTabBarController()
@@ -19,7 +20,7 @@ class OnboardingViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var pageController: UIPageControl!
-    
+    @IBOutlet weak var getStartedButton: UIButton!
     
     // MARK: - Init
     override func viewDidLoad() {
@@ -27,13 +28,15 @@ class OnboardingViewController: UIViewController {
         configures()
     }
     
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let index = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
         showCaption(atIndex: index)
         self.pageController.currentPage = index
+        setupGetStaredBtn(index: index)
+
     }
     
-
     // MARK: - Configures
     private func configures() {
         setupViews()
@@ -41,8 +44,22 @@ class OnboardingViewController: UIViewController {
         showCaption(atIndex: 0)
         setupPageControl()
     }
+    
+    
+    
+    private func setupGetStaredBtn(index: Int) {
+        if index == Slide.collection.count - 1  {
+            getStartedButton.backgroundColor = .systemGreen
+            getStartedButton.isEnabled = true
+        } else {
+            getStartedButton.backgroundColor = .systemGray
+            getStartedButton.isEnabled = false
+        }
+    }
+    
     private func setupPageControl() {
         pageController.numberOfPages = Slide.collection.count
+        
     }
     
     private func showCaption(atIndex index: Int) {
@@ -80,7 +97,10 @@ extension OnboardingViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! OnboardingCollectionViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.ReuseIdentifier.onboardingCollectionViewCell, for: indexPath) as? OnboardingCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
         let imageName = Slide.collection[indexPath.item].imageName
         let image = UIImage(named: imageName) ?? UIImage()
         cell.configure(image: image)
